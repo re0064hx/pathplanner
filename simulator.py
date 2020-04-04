@@ -24,9 +24,13 @@ def main():
         Car3 = utils.Vehicle(30, 0, 19, 0, 0, 0, 0, 0, 4.75, 1.75, sets.Ts)
         Car4 = utils.Vehicle(-10, 0, 18, 0, 0, 0, 0, 0, 4.75, 1.75, sets.Ts)
 
+        drawer.plot_rectangle(Car0, Car1, Car2, Car3, Car4)
+
+
         # ここのFORループはアニメーション関数に全部委ねられる
         for m in range(sets.MaxLoopTimes):
-            drawer.plot_rectangle(Car0, Car1, Car2, Car3, Car4)
+            # drawer.plot_rectangle(Car0, Car1, Car2, Car3, Car4)
+            drawer.plot_loop(Car0, Car1, Car2, Car3, Car4)
             Car0.state_update(18,0,0,0.01)
             Car1.state_update(18.5,0,0,0)
             Car2.state_update(17,0,0,0)

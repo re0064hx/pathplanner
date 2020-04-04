@@ -11,7 +11,10 @@ class Animation():
         ## plot 初期化
         # グラフ仕様設定
         # print("Initialization...")
-        # self.fig = plt.figure(figsize=(3,15))
+        # self.fig = plt.figure(figsize=(2,6))
+        self.fig, self.ax0 = plt.subplots(figsize=(2,6))
+        self.fig.canvas.draw()
+        self.fig.show()
 
         # 軸
         # 最大値と最小値⇒軸の範囲設定
@@ -19,62 +22,70 @@ class Animation():
         self.min_x = -10
         self.max_y = 5
         self.min_y = -5
-        # self.fig = plt.figure(figsize=(2,6))
-        self.fig, self.ax0 = plt.subplots(figsize=(2,6))
-        self.fig.canvas.draw()
-        self.fig.show()
     
     def plot_rectangle(self, Car0, Car1, Car2, Car3, Car4):
         # Axes インスタンス作成
         # ax0 = self.fig.add_subplot(111)
-        ax0 = self.ax0
 
         # Limitation of x-axis and y-axis 
         # 描画時，x-y軸は逆転させる
-        ax0.set_ylim(self.min_x + Car0.X, self.max_x + Car0.X)
-        ax0.set_xlim(self.min_y + Car0.Y, self.max_y + Car0.Y)
-        # ax0.set_xlim(self.min_x, self.max_x)
-        # ax0.set_ylim(self.min_y, self.max_y)
+        self.ax0.set_ylim(self.min_x + Car0.X, self.max_x + Car0.X)
+        self.ax0.set_xlim(self.min_y + Car0.Y, self.max_y + Car0.Y)
+        # self.ax0.set_xlim(self.min_x, self.max_x)
+        # self.ax0.set_ylim(self.min_y, self.max_y)
 
         # x軸（自車中心座標y軸方向）の正負を逆転
-        ax0.invert_xaxis()
+        self.ax0.invert_xaxis()
 
         # # 軸の縦横比, 正方形，単位あたりの長さを等しくする
-        ax0.set_aspect('equal')
+        self.ax0.set_aspect('equal')
         # self.change_aspect_ratio(ax, 1/5) # 横を1/5倍長く（縦を5倍長く）設定
 
         # 軸の名前設定
-        ax0.set_xlabel('Y [m]')
-        ax0.set_ylabel('X [m]')
+        self.ax0.set_xlabel('Y [m]')
+        self.ax0.set_ylabel('X [m]')
 
         # その他グラフ仕様
-        ax0.grid(True) # グリッド
+        self.ax0.grid(True) # グリッド
         # 凡例
-        # ax0.legend()
+        # self.ax0.legend()
 
-        # rectangle
-        # rect_0 = patches.Rectangle((Car0.Y-Car0.length/2, Car0.X-Car0.width/2),Car0.width,Car0.length,angle=Car0.theta,ec='r', fill=False)
-        # rect_1 = patches.Rectangle((Car1.Y-Car1.length/2, Car1.X-Car1.width/2),Car1.width,Car1.length,angle=Car1.theta,ec='b', fill=False)
-        # rect_2 = patches.Rectangle((Car2.Y-Car2.length/2, Car2.X-Car2.width/2),Car2.width,Car2.length,angle=Car2.theta,ec='b', fill=False)
-        # rect_3 = patches.Rectangle((Car3.Y-Car3.length/2, Car3.X-Car3.width/2),Car3.width,Car3.length,angle=Car3.theta,ec='b', fill=False)
-        # rect_4 = patches.Rectangle((Car4.Y-Car4.length/2, Car4.X-Car4.width/2),Car4.width,Car4.length,angle=Car4.theta,ec='b', fill=False)
-        rect_0 = patches.Rectangle((Car0.Y-Car0.width/2, Car0.X-Car0.length/2),Car0.width,Car0.length,angle=-Car0.theta*180/np.pi, ec='r', fill=False)
-        rect_1 = patches.Rectangle((Car1.Y-Car1.width/2, Car1.X-Car1.length/2),Car1.width,Car1.length,angle=-Car1.theta*180/np.pi, ec='b', fill=False)
-        rect_2 = patches.Rectangle((Car2.Y-Car2.width/2, Car2.X-Car2.length/2),Car2.width,Car2.length,angle=-Car2.theta*180/np.pi, ec='b', fill=False)
-        rect_3 = patches.Rectangle((Car3.Y-Car3.width/2, Car3.X-Car3.length/2),Car3.width,Car3.length,angle=-Car3.theta*180/np.pi, ec='b', fill=False)
-        rect_4 = patches.Rectangle((Car4.Y-Car4.width/2, Car4.X-Car4.length/2),Car4.width,Car4.length,angle=-Car4.theta*180/np.pi, ec='b', fill=False)
-        ax0.add_patch(rect_0)
-        ax0.add_patch(rect_1)
-        ax0.add_patch(rect_2)
-        ax0.add_patch(rect_3)
-        ax0.add_patch(rect_4)
+        # Generate rectangle
+        self.rect_0 = patches.Rectangle((Car0.Y-Car0.width/2, Car0.X-Car0.length/2),Car0.width,Car0.length,angle=-Car0.theta*180/np.pi, ec='r', fill=False)
+        self.rect_1 = patches.Rectangle((Car1.Y-Car1.width/2, Car1.X-Car1.length/2),Car1.width,Car1.length,angle=-Car1.theta*180/np.pi, ec='b', fill=False)
+        self.rect_2 = patches.Rectangle((Car2.Y-Car2.width/2, Car2.X-Car2.length/2),Car2.width,Car2.length,angle=-Car2.theta*180/np.pi, ec='b', fill=False)
+        self.rect_3 = patches.Rectangle((Car3.Y-Car3.width/2, Car3.X-Car3.length/2),Car3.width,Car3.length,angle=-Car3.theta*180/np.pi, ec='b', fill=False)
+        self.rect_4 = patches.Rectangle((Car4.Y-Car4.width/2, Car4.X-Car4.length/2),Car4.width,Car4.length,angle=-Car4.theta*180/np.pi, ec='b', fill=False)
+        
+        self.plot0 = self.ax0.add_patch(self.rect_0)
+        self.plot1 = self.ax0.add_patch(self.rect_1)
+        self.plot2 = self.ax0.add_patch(self.rect_2)
+        self.plot3 = self.ax0.add_patch(self.rect_3)
+        self.plot4 = self.ax0.add_patch(self.rect_4)
+        # plt.show()
+        plt.pause(sets.Ts)
+
+        # 角度変化も描画したい場合
+        # self.ax0.clear()
+
+
+    def plot_loop(self, Car0, Car1, Car2, Car3, Car4):
+        # 描画時，x-y軸は逆転させる
+        self.ax0.set_ylim(self.min_x + Car0.X, self.max_x + Car0.X)
+        self.ax0.set_xlim(self.min_y + Car0.Y, self.max_y + Car0.Y)
+         # x軸（自車中心座標y軸方向）の正負を逆転
+        self.ax0.invert_xaxis()
+
+        self.plot0.set_xy([Car0.Y, Car0.X])
+        self.plot1.set_xy([Car1.Y, Car1.X])
+        self.plot2.set_xy([Car2.Y, Car2.X])
+        self.plot3.set_xy([Car3.Y, Car3.X])
+        self.plot4.set_xy([Car4.Y, Car4.X])
         plt.pause(sets.Ts)
 
         self.fig.canvas.draw()
-        self.fig.canvas.flush_events() # <-これがないと画面に描画されない。
+        self.fig.canvas.flush_events()
 
-        # self.fig.delaxes(ax0)
-        self.ax0.clear()
 
 
     def change_aspect_ratio(self, ax, ratio):
