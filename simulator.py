@@ -26,7 +26,6 @@ def main():
 
         drawer.plot_rectangle(Car0, Car1, Car2, Car3, Car4)
 
-
         # ここのFORループはアニメーション関数に全部委ねられる
         for m in range(sets.MaxLoopTimes):
             # drawer.plot_rectangle(Car0, Car1, Car2, Car3, Car4)

@@ -22,10 +22,18 @@ class Animation():
         self.min_x = -10
         self.max_y = 5
         self.min_y = -5
+
+    def plot_lane(self):
+        lane_base_x = np.arange(-100, 500).T
+        lane_base_y = np.zeros_like(lane_base_x)
+        # print("lane:", lane_base_x, lane_base_y)
+        self.ax0.plot(lane_base_y+1.75, lane_base_x, color="k", linestyle="dashed")
+        self.ax0.plot(lane_base_y-1.75, lane_base_x, color="k", linestyle="dashed")
+        self.ax0.plot(lane_base_y+5.25, lane_base_x, color="k", linestyle="dashed")
+        self.ax0.plot(lane_base_y-5.25, lane_base_x, color="k", linestyle="dashed")
     
     def plot_rectangle(self, Car0, Car1, Car2, Car3, Car4):
-        # Axes インスタンス作成
-        # ax0 = self.fig.add_subplot(111)
+        self.plot_lane()
 
         # Limitation of x-axis and y-axis 
         # 描画時，x-y軸は逆転させる
@@ -51,6 +59,7 @@ class Animation():
         # self.ax0.legend()
 
         # Generate rectangle
+        print("disp:", Car0.Y-Car0.width/2)
         self.rect_0 = patches.Rectangle((Car0.Y-Car0.width/2, Car0.X-Car0.length/2),Car0.width,Car0.length,angle=-Car0.theta*180/np.pi, ec='r', fill=False)
         self.rect_1 = patches.Rectangle((Car1.Y-Car1.width/2, Car1.X-Car1.length/2),Car1.width,Car1.length,angle=-Car1.theta*180/np.pi, ec='b', fill=False)
         self.rect_2 = patches.Rectangle((Car2.Y-Car2.width/2, Car2.X-Car2.length/2),Car2.width,Car2.length,angle=-Car2.theta*180/np.pi, ec='b', fill=False)
@@ -76,11 +85,11 @@ class Animation():
          # x軸（自車中心座標y軸方向）の正負を逆転
         self.ax0.invert_xaxis()
 
-        self.plot0.set_xy([Car0.Y, Car0.X])
-        self.plot1.set_xy([Car1.Y, Car1.X])
-        self.plot2.set_xy([Car2.Y, Car2.X])
-        self.plot3.set_xy([Car3.Y, Car3.X])
-        self.plot4.set_xy([Car4.Y, Car4.X])
+        self.plot0.set_xy([Car0.Y-Car0.width/2, Car0.X-Car0.length/2])
+        self.plot1.set_xy([Car1.Y-Car1.width/2, Car1.X-Car1.length/2])
+        self.plot2.set_xy([Car2.Y-Car2.width/2, Car2.X-Car2.length/2])
+        self.plot3.set_xy([Car3.Y-Car3.width/2, Car3.X-Car3.length/2])
+        self.plot4.set_xy([Car4.Y-Car4.width/2, Car4.X-Car4.length/2])
         plt.pause(sets.Ts)
 
         self.fig.canvas.draw()
