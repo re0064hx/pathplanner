@@ -10,31 +10,35 @@ class Animation():
     def __init__(self):
         ## plot 初期化
         # グラフ仕様設定
-        # print("Initialization...")
         # self.fig = plt.figure(figsize=(2,6))
         self.fig, self.ax0 = plt.subplots(figsize=(2,6))
         self.fig.canvas.draw()
         self.fig.show()
-
         # 軸
         # 最大値と最小値⇒軸の範囲設定
         self.max_x = 40
         self.min_x = -10
         self.max_y = 5
         self.min_y = -5
+        print("Animation drawer sucsessfully initialized.")
 
-    def plot_lane(self):
-        lane_base_x = np.arange(-100, 500).T
-        lane_base_y = np.zeros_like(lane_base_x)
-        # print("lane:", lane_base_x, lane_base_y)
-        self.ax0.plot(lane_base_y+1.75, lane_base_x, color="k", linestyle="dashed")
-        self.ax0.plot(lane_base_y-1.75, lane_base_x, color="k", linestyle="dashed")
-        self.ax0.plot(lane_base_y+5.25, lane_base_x, color="k", linestyle="dashed")
-        self.ax0.plot(lane_base_y-5.25, lane_base_x, color="k", linestyle="dashed")
+    def plot_lane(self, path, idx):
+        # 直線路の時
+        # lane_base_x = np.arange(-100, 500).T
+        # lane_base_y = np.zeros_like(lane_base_x)
+        # # print("lane:", lane_base_x, lane_base_y)
+        # self.ax0.plot(lane_base_y+1.75, lane_base_x, color="k", linestyle="dashed")
+        # self.ax0.plot(lane_base_y-1.75, lane_base_x, color="k", linestyle="dashed")
+        # self.ax0.plot(lane_base_y+5.25, lane_base_x, color="k", linestyle="dashed")
+        # self.ax0.plot(lane_base_y-5.25, lane_base_x, color="k", linestyle="dashed")
+        
+        # 参照経路プロット
+        self.ax0.plot(path[:,1], path[:,0], ".k")
+        # 注視点プロット
+        self.ax0.plot(path[idx,1], path[idx,0], "xr")
+
     
     def plot_rectangle(self, Car0, Car1, Car2, Car3, Car4):
-        self.plot_lane()
-
         # Limitation of x-axis and y-axis 
         # 描画時，x-y軸は逆転させる
         self.ax0.set_ylim(self.min_x + Car0.X, self.max_x + Car0.X)
@@ -59,7 +63,6 @@ class Animation():
         # self.ax0.legend()
 
         # Generate rectangle
-        print("disp:", Car0.Y-Car0.width/2)
         self.rect_0 = patches.Rectangle((Car0.Y-Car0.width/2, Car0.X-Car0.length/2),Car0.width,Car0.length,angle=-Car0.theta*180/np.pi, ec='r', fill=False)
         self.rect_1 = patches.Rectangle((Car1.Y-Car1.width/2, Car1.X-Car1.length/2),Car1.width,Car1.length,angle=-Car1.theta*180/np.pi, ec='b', fill=False)
         self.rect_2 = patches.Rectangle((Car2.Y-Car2.width/2, Car2.X-Car2.length/2),Car2.width,Car2.length,angle=-Car2.theta*180/np.pi, ec='b', fill=False)
@@ -75,7 +78,7 @@ class Animation():
         plt.pause(sets.Ts)
 
         # 角度変化も描画したい場合
-        # self.ax0.clear()
+        self.ax0.clear()
 
 
     def plot_loop(self, Car0, Car1, Car2, Car3, Car4):
@@ -94,8 +97,6 @@ class Animation():
 
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
-
-
 
     def change_aspect_ratio(self, ax, ratio):
         '''

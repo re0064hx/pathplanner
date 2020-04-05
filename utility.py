@@ -1,3 +1,4 @@
+import math
 import numpy as np
 
 import settings as sets
@@ -53,3 +54,7 @@ class Vehicle():
         self.Y += self.V*np.sin(self.theta) * self.dt # lateral coordinate value
         self.theta += self.YR * self.dt
 
+    def calc_distance(self, point_x, point_y):
+        dx = self.X - point_x
+        dy = self.Y - point_y
+        return math.hypot(dx, dy)
