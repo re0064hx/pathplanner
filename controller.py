@@ -49,4 +49,4 @@ class Controller():
         alpha = math.atan2(ty - car.Y, tx - car.X) - car.theta
         delta = math.atan2(2.0 * (car.length) * math.sin(alpha) / Lf, 1.0)
 
-        return delta*np.pi/180.0, idx
+        return delta, idx

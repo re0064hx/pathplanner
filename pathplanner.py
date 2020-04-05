@@ -18,8 +18,8 @@ class PathPlanner():
         # csv_input = pd.read_csv('reference_path.csv')
         csv_input = pd.read_csv('oval_course.csv')
         self.path = csv_input.values
-        self.cx = self.path[:,1]
-        self.cy = self.path[:,0]
+        self.cx = self.path[:,0]
+        self.cy = self.path[:,1]
         self.theta_r = np.arctan2(self.cy, self.cx)
 
     def search_target_index(self, car):
@@ -29,29 +29,27 @@ class PathPlanner():
             dx = [car.X - icx for icx in self.cx]
             dy = [car.Y - icy for icy in self.cy]
             d = np.hypot(dx, dy)
-            ind = np.argmin(d)
-            self.old_nearest_point_index = ind
+            idx = np.argmin(d)
+            self.old_nearest_point_index = idx 
         else:
-            ind = self.old_nearest_point_index
-            distance_this_index = car.calc_distance(self.cx[ind],
-                                                      self.cy[ind])
+            idx = self.old_nearest_point_index
+            distance_this_index = car.calc_distance(self.cx[idx], self.cy[idx])
             while True:
-                distance_next_index = car.calc_distance(self.cx[ind + 1],
-                                                          self.cy[ind + 1])
+                distance_next_index = car.calc_distance(self.cx[idx + 1], self.cy[idx + 1])
                 if distance_this_index < distance_next_index:
                     break
-                ind = ind + 1 if (ind + 1) < len(self.cx) else ind
+                idx = idx + 1 if (idx + 1) < len(self.cx) else idx
                 distance_this_index = distance_next_index
-            self.old_nearest_point_index = ind
+            self.old_nearest_point_index = idx
 
         Lf = sets.THW_lat * car.V + sets.min_len_lat  # update look ahead distance
 
         # search look ahead target point index
-        while Lf > car.calc_distance(self.cx[ind], self.cy[ind]):
-            if (ind + 1) >= len(self.cx):
+        while Lf > car.calc_distance(self.cx[idx], self.cy[idx]):
+            if (idx + 1) >= len(self.cx):
                 break  # not exceed goal
-            ind += 1
+            idx += 1
 
-        print("Index:", ind, " Gaze length:", Lf)
+        print("Index:", idx, " Gaze length:", Lf, " path:", self.cx[idx], self.cy[idx])
 
-        return ind, Lf
+        return idx, Lf
