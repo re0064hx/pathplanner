@@ -1,6 +1,5 @@
 import sys
 import csv
-import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -26,8 +25,8 @@ def csv_output(X,Y):
             writer.writerow(csvlist)
 
 def main():
-    R = 200 # 曲線距離
-    L = 100 # 直線距離
+    R = 100 # 曲線距離
+    L = 20 # 直線距離
     len_wp = 1.0
     ds = len_wp/R
     theta1 = np.arange(-np.pi/2, np.pi/2, ds)

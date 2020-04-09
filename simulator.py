@@ -32,17 +32,17 @@ def main():
         Car4 = utils.Vehicle(-10, 0, 18, 0, 0, 0, 0, 0, 4.75, 1.75, sets.Ts)
         # Load reference course
         planner.path_generation()
-        target_idx, _ = planner.search_target_index(Car0)
+        target_idx, vhcl_idx, L_lat = planner.search_target_index(Car0)
 
         # Animation settings
-        drawer.plot_lane(planner.path, target_idx)
+        drawer.plot_lane(planner.path, target_idx, vhcl_idx)
         drawer.plot_rectangle(Car0, Car1, Car2, Car3, Car4)
 
         ''' === Main Procedure === '''
         # ここのFORループはアニメーション関数に全部委ねられる
         for m in range(sets.MaxLoopTimes):
             ''' 描画設定 '''
-            drawer.plot_lane(planner.path, target_idx)
+            drawer.plot_lane(planner.path, target_idx, vhcl_idx)
             # yaw角度変化を表示したい時
             drawer.plot_rectangle(Car0, Car1, Car2, Car3, Car4)
             # 描画を少し早くする時
@@ -50,9 +50,10 @@ def main():
 
             ''' 制御演算 '''
             # 注視点更新
-            planner.search_target_index(Car0)
+            target_idx, vhcl_idx, L_lat = planner.search_target_index(Car0)
             # 制御演算
-            delta, target_idx = ctrl.pure_pursuit(Car0, planner, target_idx)
+            # delta, vhcl_id = ctrl.pure_pursuit(Car0, planner, target_idx)
+            delta, _ = ctrl.kanayama_method(Car0, planner, vhcl_idx)
             # 車両状態更新
             Car0.state_update(18,0,0,delta)
             Car1.state_update(18.5,0,0,0)

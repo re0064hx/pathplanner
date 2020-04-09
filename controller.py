@@ -9,31 +9,36 @@ class Controller():
         self.e3 = 0.0
         print("Controller sucsessfully initialized.")
 
-    def calc_error(self):
-        self.e1 = self.X
-        self.e2 = self.Y
-        self.e3 = self.theta
+    def calc_error(self, car, ref):
+        self.e1 = car.X - ref[0]
+        self.e2 = car.Y - ref[1]
+        self.e3 = car.theta - ref[2]
+        # print("e2:", self.e2, " e3:", self.e3)
 
-    def kanayama_method(self):
+    def kanayama_method(self, car, path, idx):
         '''
         This function is calculate lateral control input
         based on Kanayama's method.
         '''
-        K2 = 0.05
-        K3 = 0.2
+        K2 = 0.00
+        K3 = 0.1
         rho = 0
-        # e2 = RefPath.Y[l-1, 0] - Car0.Y[l-1, 0]
-        # e3 = RefPath.theta[l-1, 0] - Car0.theta[l-1, 0]
+        yaw_ref = np.arctan2(path.cy[idx]-path.cy[idx-1], path.cx[idx]-path.cx[idx-1])
+        print("yaw_ref:", yaw_ref, " theta:", car.theta)
+        ref = np.array([path.cx[idx], path.cy[idx], yaw_ref])
+        self.calc_error(car, ref)
+        # e2 = RefPath.Y[l-1, 0] - car.Y[l-1, 0]
+        # e3 = RefPath.theta[l-1, 0] - car.theta[l-1, 0]
 
-        term1 = (Car0.Kf*Car0.lf - Car0.Kr*Car0.lr)/(Car0.Kf*Car0.V[l-1, 0]) * Car0.YR[l-1, 0]
-        term2 = (Car0.Kf + Car0.Kr)/(Car0.Kf) * Car0.beta[l-1, 0]
-        term3 = (Car0.m * Car0.V[l-1, 0])/(2*Car0.Kf) * (rho*(Car0.V[l-1, 0]*np.cos(Car0.e3[l-1, 0]))/(1-Car0.e2[l-1, 0]*rho) - K2*Car0.e2[l-1, 0]*Car0.V[l-1, 0] - K3*np.sin(Car0.e3[l-1, 0]))
+        term1 = (car.Kf*car.lf - car.Kr*car.lr)/(car.Kf*car.V) * car.YR
+        term2 = (car.Kf + car.Kr)/(car.Kf) * car.beta
+        term3 = (car.m * car.V)/(2*car.Kf) * (rho*(car.V*np.cos(self.e3))/(1-self.e2*rho) - K2*self.e2*car.V - K3*np.sin(self.e3))
 
         self.delta = term1 + term2 + term3
-        return self.delta
+        return self.delta, idx
 
     def pure_pursuit(self, car, path, pidx):
-        idx, Lf = path.search_target_index(car)
+        idx, idx_vhcl, Lf = path.search_target_index(car)
 
         if pidx >= idx:
             idx = pidx

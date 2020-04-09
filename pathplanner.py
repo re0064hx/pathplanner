@@ -23,25 +23,28 @@ class PathPlanner():
         self.theta_r = np.arctan2(self.cy, self.cx)
 
     def search_target_index(self, car):
+        current_idx = 0
         # To speed up nearest point search, doing it at only first time.
         if self.old_nearest_point_index is None:
             # search nearest point index
             dx = [car.X - icx for icx in self.cx]
             dy = [car.Y - icy for icy in self.cy]
-            d = np.hypot(dx, dy)
+            d = np.hypot(dx, dy) # 原点からの距離
             idx = np.argmin(d)
             self.old_nearest_point_index = idx 
         else:
             idx = self.old_nearest_point_index
             distance_this_index = car.calc_distance(self.cx[idx], self.cy[idx])
+            # next indexが昔のインデックスより大きくなるまで繰り返し
             while True:
                 distance_next_index = car.calc_distance(self.cx[idx + 1], self.cy[idx + 1])
-                if distance_this_index < distance_next_index:
+                if distance_this_index < distance_next_index: 
                     break
                 idx = idx + 1 if (idx + 1) < len(self.cx) else idx
-                distance_this_index = distance_next_index
+                distance_this_index = distance_next_index # index更新
             self.old_nearest_point_index = idx
 
+        idx_current = idx
         Lf = sets.THW_lat * car.V + sets.min_len_lat  # update look ahead distance
 
         # search look ahead target point index
@@ -50,6 +53,6 @@ class PathPlanner():
                 break  # not exceed goal
             idx += 1
 
-        print("Index:", idx, " Gaze length:", Lf, " path:", self.cx[idx], self.cy[idx])
+        # print("Current:", idx_current, " Gaze point:", idx, " Gaze length:", Lf)
 
-        return idx, Lf
+        return idx, idx_current, Lf
